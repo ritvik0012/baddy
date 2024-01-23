@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 const User = require('../models/users');
+const Token = require('../models/token');
 
 exports.getSignUp = (req,res) => {
     res.render("signup",{alert: req.flash('alert'), notice: req.flash('notice')});
@@ -15,6 +16,11 @@ exports.getHomePage = (req,res) => {
     res.render("homePage", {alert: req.flash('alert'), notice: req.flash('notice'), currentuser: res.locals.user})
 }
 
+exports.getReset = (req,res) => {
+  console.log(req.params.userId);
+  res.render("reset", {alert: req.flash('alert'), notice: req.flash('notice'), token: req.params.userId});
+}
+
 exports.getForgotPassword = (req,res) => {
   res.render("forgotPassword", {alert: req.flash('alert'), notice: req.flash('notice')});
 }
@@ -23,7 +29,6 @@ exports.postForgotPassword = async (req,res) => {
   var email = req.body.email;
   var doesEmailExist = await User.findOne({email: email});
   if(doesEmailExist){
-    res.redirect('/forgotPassword');
     const otp = Math.floor(1000 + Math.random() * 9000);
     console.log(otp);
     var transporter = nodemailer.createTransport({
@@ -33,11 +38,16 @@ exports.postForgotPassword = async (req,res) => {
         pass: 'tdiq hvzd rfxa wpeb',
       }
     });
+    const token = await new Token({
+      email: email,
+    }).save();
+    
+    const link = `http://localhost:3000/reset/${token._id}`;
     var mailOptions = {
       from: 'ritvik0012@gmail.com',
       to: email,
       subject: 'OTP for changing password!',
-      text: 'This is the otp ' + otp,
+      text: link,
     }
     transporter.sendMail(mailOptions, function(error,info) {
       if(error){
@@ -47,6 +57,10 @@ exports.postForgotPassword = async (req,res) => {
         console.log('Email sent: ' + info.response);
       }
     })
+
+    //push the otp to model and add user_id to redirect and use userid to confirm otp.
+    req.flash('alert','Email sent with password change link!')
+    res.redirect('/forgotPassword');
   }
   else{
     req.flash('alert','Email Does Not Exist!');
@@ -101,6 +115,25 @@ exports.postSignUp = async (req,res) => {
     }).catch((err) => console.log(err));
     res.redirect("/login");
 }
+}
+
+exports.postReset = async (req,res) => {
+  console.log(req.body.password);
+  const token = await Token.findOne({_id: req.params.token});
+  const filter = { email: token.email };
+  const updateDoc = {
+      $set: {
+          password: req.body.password,
+          },
+      };
+  const updateResult = await User.updateOne(filter,updateDoc);
+  console.log(updateResult);
+
+  const user = await User.findOne({email: token.email});
+  Token.deleteOne({id: req.params.token});
+  console.log(user);
+  req.flash('alert','successfully changed password!');
+  res.redirect('/signup');
 }
 
 exports.postLogout = (req,res) => {
