@@ -5,43 +5,23 @@ const User = require('../models/users');
 const Token = require('../models/token');
 
 exports.getSignUp = (req,res) => {
-    res.status(200).json({test:"TEST"});
-    //res.render("signup",{alert: req.flash('alert'), notice: req.flash('notice')});
+    res.status(200);
 }
 
 exports.getLogin = (req,res) => {
-  //res.status(200).json({test:"TEST1"});
-  res.render("login", {alert: req.flash('alert'), notice: req.flash('notice')});
+  res.status(200);
 }
 
 exports.getHomePage = (req,res) => {
-    const token = req.cookies.login;
-    console.log("this api is hit");
-    jwt.verify('eyJhbGciOiJIUzI1NiJ9.cml0dmlrMDAxMkBnbWFpbC5jb20.0E6enRjlapGcBM3nkG3CHctqJeeshstsL9GgZNJSuPc',"secret",async (err,uname) => {
-      if(err) {
-          console.log(err);
-          //return res.redirect('/login')
-      }
-      res.locals.user = uname;
-      /*
-      if(req.originalUrl === '/signup' || req.originalUrl === '/login' || req.originalUrl === '/'){
-          return res.redirect('/homePage');
-      }
-      */
-      
-  
-  })
     res.status(200).json({currentuser: res.locals.user});
-    //res.render("homePage", {alert: req.flash('alert'), notice: req.flash('notice'), currentuser: res.locals.user})
 }
 
 exports.getReset = (req,res) => {
-  console.log(req.params.userId);
-  res.render("reset", {alert: req.flash('alert'), notice: req.flash('notice'), token: req.params.userId});
+  res.status(200);
 }
 
 exports.getForgotPassword = (req,res) => {
-  res.render("forgotPassword", {alert: req.flash('alert'), notice: req.flash('notice')});
+  res.status(200);
 }
 
 exports.postForgotPassword = async (req,res) => {
@@ -75,7 +55,6 @@ exports.postForgotPassword = async (req,res) => {
       }
     })
 
-    //push the otp to model and add user_id to redirect and use userid to confirm otp.
     res.status(200).json({message:"success"});
   }
   else{
@@ -98,7 +77,6 @@ exports.postLogin = async (req,res) => {
       secure: true,
   })
     res.status(200).json({message:"success",user,token});
-    //res.redirect("/homePage");
   }
   else{
   res.status(200).json({message:"user does not exist"});
@@ -155,7 +133,6 @@ exports.postReset = async (req,res) => {
 exports.postLogout = (req,res) => {
     res.clearCookie('login');
     //jwt.destroy();
-    req.flash("alert","successfully logged out");
-    res.redirect("/signup");
+    res.status(200);
 
 }
