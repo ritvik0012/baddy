@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom";
 
-const Home = (props) => {
+const Home = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     const navigate = useNavigate();
     
@@ -9,7 +9,6 @@ const Home = (props) => {
         // You'll update this function later
         if(localStorage.user){
             localStorage.removeItem("user");
-            props.setLoggedIn(false)
             navigate('/')
         }
         else{

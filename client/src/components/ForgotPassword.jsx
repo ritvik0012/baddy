@@ -1,12 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from "react-router-dom";
+import {Link } from "react-router-dom";
 
-const ForgotPassword = (props) => {
+const ForgotPassword = () => {
 
   const [email, setEmail] = useState("");
-  const [emailError,setEmailError] = useState("");
-  const navigate = useNavigate();
+  const [emailError] = useState("");
   //TODO: add input validations
   const onButtonClick = () => {
     axios.post("http://localhost:8080/forgotPassword", {email:email})

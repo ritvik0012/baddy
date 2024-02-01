@@ -2,14 +2,19 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
 
-const Signup = (props) => {
+const Signup = () => {
+    useEffect(() => {
+        if(localStorage.user){
+          navigate('/');
+        }
+      });
 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError,setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
+  const [emailError] = useState("");
+  const [passwordError] = useState("");
+  const [usernameError] = useState("");
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const onButtonClick = () => {

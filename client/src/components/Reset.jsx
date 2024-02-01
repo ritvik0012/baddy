@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import { useNavigate, Link, useParams } from "react-router-dom";
 
 const Reset = () => {
 
   const [password, setPassword] = useState("");
-  const [passwordError,setPasswordError] = useState("");
+  const [passwordError] = useState("");
   const navigate = useNavigate();
   const {params} = useParams();
     console.log(params);

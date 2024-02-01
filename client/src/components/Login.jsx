@@ -6,10 +6,15 @@ const Login = (props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError,setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [emailError] = useState("");
+  const [passwordError] = useState("");
   const navigate = useNavigate();
   //TODO: add input validations
+  useEffect(() => {
+    if(localStorage.user){
+      navigate('/');
+    }
+  });
   const onButtonClick = () => {
     axios.post("http://localhost:8080/login", {email:email,password:password})
             .then((response) => {
@@ -18,7 +23,6 @@ const Login = (props) => {
                     let user = response.data.user;
                     localStorage.setItem("user", JSON.stringify({email:user.email,password:user.password,token:response.data.token}));
                     props.setEmail(user.username);
-                    props.setLoggedIn(true);
                     navigate('/');
                   }
                   else{
