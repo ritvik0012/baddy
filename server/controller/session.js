@@ -5,15 +5,34 @@ const User = require('../models/users');
 const Token = require('../models/token');
 
 exports.getSignUp = (req,res) => {
-    res.render("signup",{alert: req.flash('alert'), notice: req.flash('notice')});
+    res.status(200).json({test:"TEST"});
+    //res.render("signup",{alert: req.flash('alert'), notice: req.flash('notice')});
 }
 
 exports.getLogin = (req,res) => {
+  //res.status(200).json({test:"TEST1"});
   res.render("login", {alert: req.flash('alert'), notice: req.flash('notice')});
 }
 
 exports.getHomePage = (req,res) => {
-    res.render("homePage", {alert: req.flash('alert'), notice: req.flash('notice'), currentuser: res.locals.user})
+    const token = req.cookies.login;
+    console.log("this api is hit");
+    jwt.verify('eyJhbGciOiJIUzI1NiJ9.cml0dmlrMDAxMkBnbWFpbC5jb20.0E6enRjlapGcBM3nkG3CHctqJeeshstsL9GgZNJSuPc',"secret",async (err,uname) => {
+      if(err) {
+          console.log(err);
+          //return res.redirect('/login')
+      }
+      res.locals.user = uname;
+      /*
+      if(req.originalUrl === '/signup' || req.originalUrl === '/login' || req.originalUrl === '/'){
+          return res.redirect('/homePage');
+      }
+      */
+      
+  
+  })
+    res.status(200).json({currentuser: res.locals.user});
+    //res.render("homePage", {alert: req.flash('alert'), notice: req.flash('notice'), currentuser: res.locals.user})
 }
 
 exports.getReset = (req,res) => {
@@ -29,8 +48,6 @@ exports.postForgotPassword = async (req,res) => {
   var email = req.body.email;
   var doesEmailExist = await User.findOne({email: email});
   if(doesEmailExist){
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    console.log(otp);
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -59,46 +76,46 @@ exports.postForgotPassword = async (req,res) => {
     })
 
     //push the otp to model and add user_id to redirect and use userid to confirm otp.
-    req.flash('alert','Email sent with password change link!')
-    res.redirect('/forgotPassword');
+    res.status(200).json({message:"success"});
   }
   else{
-    req.flash('alert','Email Does Not Exist!');
-    res.redirect('/forgotPassword');
+    res.status(200).json({message:"Email does not exist!"});
   }
 }
 exports.postLogin = async (req,res) => {
-  var uname = req.body.uname;
-  var password = req.body.psw;
+  var email = req.body.email;
+  var password = req.body.password;
   var user = {
-    username: uname,
+    email: email,
     password: password,
   }
   var doesUserExist = await User.findOne(user);
   console.log(user,doesUserExist);
   if(doesUserExist){
-    const token = jwt.sign(uname,"secret");
+    const token = jwt.sign(email,"secret");
     res.cookie("login",token,{
       httpOnly: true,
       secure: true,
   })
-    res.redirect("/homePage");
+    res.status(200).json({message:"success",user,token});
+    //res.redirect("/homePage");
   }
   else{
-  res.redirect("/login");
+  res.status(200).json({message:"user does not exist"});
   }
 }
 
 exports.postSignUp = async (req,res) => {
   console.log(req.params);
-  var uname = req.body.uname;
+  var uname = req.body.username;
   var email = req.body.email;
+  var password = req.body.password;
   var doesUserExist = await User.findOne({email: email});
   console.log(doesUserExist);
   if(doesUserExist){
     req.flash('alert',"Email already exists");
     console.log("Email already exists");
-    res.redirect('/signup')
+    res.status(200).json({message:"email already exists"});
     return;
   }
   else {
@@ -106,14 +123,14 @@ exports.postSignUp = async (req,res) => {
     const user = new User({
       email: email,
       username: uname,
-      password: req.body.psw,
+      password: password,
     });
 
     user.save().then((value) => {
       console.log(value)
       console.log("Entry added in database");
     }).catch((err) => console.log(err));
-    res.redirect("/login");
+    res.status(200).json({message:'success'});
 }
 }
 
@@ -132,12 +149,12 @@ exports.postReset = async (req,res) => {
   const user = await User.findOne({email: token.email});
   Token.deleteOne({id: req.params.token});
   console.log(user);
-  req.flash('alert','successfully changed password!');
-  res.redirect('/signup');
+  res.status(200).json({message:"success"});
 }
 
 exports.postLogout = (req,res) => {
     res.clearCookie('login');
+    //jwt.destroy();
     req.flash("alert","successfully logged out");
     res.redirect("/signup");
 

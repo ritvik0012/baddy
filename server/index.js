@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 8080;
 const path = require('path');
 const bodyParser = require('body-parser');
 const http = require('http');
@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session')
 const flash = require('connect-flash')
 const routes = require('./routes/session')
+const cors = require('cors');
 const io = new Server(server); //for socket.io maybe in future
 
 
@@ -19,9 +20,11 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "build")));//trying it out
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser("secret"));
+app.use(cors());
 
 app.use(session({ 
   cookie: {maxAge: 60000},
