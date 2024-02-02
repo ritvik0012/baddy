@@ -1,19 +1,17 @@
 import React, {useEffect} from "react"
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Admin = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     const navigate = useNavigate();
-
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem("user"));
-        if(userData && userData.admin){
-            navigate('/admin');
+        if(userData && !userData.admin){
+            navigate('/');
         }
       });
     
     const onButtonClick = () => {
-        // You'll update this function later
         if(localStorage.user){
             localStorage.removeItem("user");
             navigate('/')
@@ -36,11 +34,14 @@ const Home = () => {
                 type="button"
                 onClick={onButtonClick}
                 value={localStorage.user ? "Log out" : "Log in"} />
-                {(localStorage.user && <div><input
+                <input
                 className={"inputButton"}
                 type="button"
-                value={"Book Courts"} />
-                </div>)}
+                value={"Add schedule"} />
+                <input
+                className={"inputButton"}
+                type="button"
+                value={"View Bookings"} />
             {(localStorage.user ? <div>
                 Welcome! {user.email}
             </div> : <div/>)}
@@ -50,4 +51,4 @@ const Home = () => {
     </div>
 }
 
-export default Home
+export default Admin

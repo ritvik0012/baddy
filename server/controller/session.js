@@ -76,7 +76,8 @@ exports.postLogin = async (req,res) => {
       httpOnly: true,
       secure: true,
   })
-    res.status(200).json({message:"success",user,token});
+    console.log(doesUserExist);
+    res.status(200).json({message:"success",doesUserExist,token});
   }
   else{
   res.status(200).json({message:"user does not exist"});

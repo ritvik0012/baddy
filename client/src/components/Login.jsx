@@ -11,19 +11,30 @@ const Login = (props) => {
   const navigate = useNavigate();
   //TODO: add input validations
   useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
     if(localStorage.user){
-      navigate('/');
+      if(userData.admin){
+        navigate('/admin');
+      }
+      else{
+        navigate('/');
+      }
     }
   });
   const onButtonClick = () => {
     axios.post("http://localhost:8080/login", {email:email,password:password})
             .then((response) => {
-                  console.log(response.data);
                   if(response.data.message === 'success'){
-                    let user = response.data.user;
-                    localStorage.setItem("user", JSON.stringify({email:user.email,password:user.password,token:response.data.token}));
+                    let user = response.data.doesUserExist;
+                    console.log(user);
+                    localStorage.setItem("user", JSON.stringify({email:user.email,password:user.password,admin:user.admin,token:response.data.token}));
                     props.setEmail(user.username);
-                    navigate('/');
+                    if(user.admin){
+                      navigate('/admin');
+                    }
+                    else{
+                      navigate('/')
+                    }
                   }
                   else{
                     window.alert('Incorrect username or password');

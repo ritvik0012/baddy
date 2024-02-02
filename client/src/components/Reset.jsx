@@ -1,8 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { useNavigate, Link, useParams } from "react-router-dom";
 
 const Reset = () => {
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if(localStorage.user){
+      if(userData.admin){
+        navigate('/admin');
+      }
+      else{
+        navigate('/');
+      }
+    }
+  });
 
   const [password, setPassword] = useState("");
   const [passwordError] = useState("");

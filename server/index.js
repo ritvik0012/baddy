@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const port = 8080;
 const path = require('path');
 const bodyParser = require('body-parser');
 const http = require('http');
@@ -13,6 +12,9 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const routes = require('./routes/session')
 const cors = require('cors');
+const dotenv = require('dotenv');
+dotenv.config();
+const port = process.env.PORT;
 const io = new Server(server); //for socket.io maybe in future
 
 
@@ -36,7 +38,7 @@ app.use(session({
 app.use(flash());
 app.use("/",routes)
 
-const uri = "mongodb://localhost:27017/baddy";
+const uri = process.env.MONGODB_URI;
 
 mongoose.connect(uri);
 

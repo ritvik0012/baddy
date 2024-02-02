@@ -3,9 +3,16 @@ import axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
+    
     useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem("user"));
         if(localStorage.user){
-          navigate('/');
+          if(userData.admin){
+            navigate('/admin');
+          }
+          else{
+            navigate('/');
+          }
         }
       });
 

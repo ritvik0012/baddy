@@ -1,8 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {Link } from "react-router-dom";
+import {Link, Navigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const navigate = Navigate();
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if(localStorage.user){
+      if(userData.admin){
+        navigate('/admin');
+      }
+      else{
+        navigate('/');
+      }
+    }
+  });
 
   const [email, setEmail] = useState("");
   const [emailError] = useState("");
