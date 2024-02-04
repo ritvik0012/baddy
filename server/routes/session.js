@@ -16,5 +16,6 @@ router.post('/login',controllerRoutes.postLogin);
 router.post('/logout',middleware.middlewareFunction,controllerRoutes.postLogout);
 router.post('/forgotPassword',controllerRoutes.postForgotPassword)
 router.post('/reset/:token',controllerRoutes.postReset);
+router.post('/booking', controllerRoutes.postNewBooking);
 
 module.exports = router

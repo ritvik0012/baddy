@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 
 const User = require('../models/users');
 const Token = require('../models/token');
+const Slot = require('../models/slots');
 
 exports.getSignUp = (req,res) => {
     res.status(200);
@@ -129,6 +130,25 @@ exports.postReset = async (req,res) => {
   Token.deleteOne({id: req.params.token});
   console.log(user);
   res.status(200).json({message:"success"});
+}
+
+exports.postNewBooking = async (req,res) => {
+  var time = req.body.startTime + ':00.000Z';
+  var startTime = new Date(time);
+  var court = req.body.court;
+  var slot = {
+    startTime: startTime,
+    court: court,
+  }
+  const slotExist = await Slot.findOne(slot);
+  if(!slotExist){
+    const newSlot = Slot(slot);
+    newSlot.save();
+    res.status(200).json({message:"success"});
+  }
+  else{
+    res.status(200).json({message:"slot already exists"});
+  }
 }
 
 exports.postLogout = (req,res) => {

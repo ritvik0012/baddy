@@ -26,7 +26,6 @@ const Login = (props) => {
             .then((response) => {
                   if(response.data.message === 'success'){
                     let user = response.data.doesUserExist;
-                    console.log(user);
                     localStorage.setItem("user", JSON.stringify({email:user.email,password:user.password,admin:user.admin,token:response.data.token}));
                     props.setEmail(user.username);
                     if(user.admin){
