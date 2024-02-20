@@ -5,5 +5,31 @@ The project can be cloned into your local system using the following command.
 ```terminal
 $ git clone git@github.com:ritvik0012/baddy.git
 ```
-``hello``
+Go to the ``client`` and  ``server`` directory and install the packages
+```terminal
+cd client
+npm install
+```
+```terminal
+cd server
+npm install
+```
+# Configuration
+Create a ``.env`` file inside the ``server`` directory and copy the following code
+```terminal
+MONGODB_URI=Your mongodb uri
+PORT=8080
+```
+# Run the App
+Go to ``client`` and ``server`` directory and start the client and server.
+```terminal
+cd client
+npm start
+```
+```terminal
+cd server
+nodemon start
+```
+
+
 
